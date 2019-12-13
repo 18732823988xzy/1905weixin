@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class WxController extends Controller{
+    //处理接受
     public function wechat()
     {
         $token = '123456asd';       //开发提前设置好的 token
@@ -32,7 +33,7 @@ class WxController extends Controller{
         $log_file="wx.log";
         //将接收的数据记录到日志文件
         $data=json_encode($_POST);
-        file_put_contents($log_file,$data,FILE_APPEND);
+        file_put_contents($log_file,$data,FILE_APPEND);   //追加写
     }
 
 
