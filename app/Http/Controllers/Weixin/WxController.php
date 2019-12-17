@@ -71,7 +71,7 @@ class WxController extends Controller{
 
      //获取用户的基本信息
     public function getUserInfo($access_token,$openid){
-        $url="https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$access_token.'&openid=$openid&lang=zh_CN";
+        $url="https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$access_token.'&openid='.$openid.'&lang=zh_CN";
         //发送网络请求
        $json_str= file_get_contents($url);
        $log_file = 'wx_user.log';
