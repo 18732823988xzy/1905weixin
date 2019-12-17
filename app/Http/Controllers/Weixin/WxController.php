@@ -1,11 +1,29 @@
-<?php
+<?
 
 namespace App\Http\Controllers\Weixin;
 
 use App\Http\Controllers\Controller;
+use Faker\Provider\File;
 use Illuminate\Http\Request;
 
 class WxController extends Controller{
+
+
+    protected  $access_token;
+
+    public  function  __construct()
+    {
+        //获取access_token
+        $this->access_token=$this->getAccessToken();
+
+    }
+    protected  function  getAccessToken(){
+        $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid='.env('WX_APPID').'&secret='.env('WX_APPSECRET').'";
+       $data_json = file_get_contents($url);
+       $arr =json_decode($data_json,true);
+       return $arr['access_token'];
+    }
+
     //处理接受
     public function wechat()
     {
@@ -32,15 +50,32 @@ class WxController extends Controller{
 
         $log_file="wx.log";
         //将接收的数据记录到日志文件
-        $xml =file_get_contents("php://input");
-        $data=date('Y-m-d H:i:s').$xml;
+        $xml_str =file_get_contents("php://input");
+        $data=date('Y-m-d H:i:s').$xml_str;
         file_put_contents($log_file,$data,FILE_APPEND);   //追加写
+
+        //处理xml数据
+        $xml_obj = simplexml_load_string($xml_str);
+        //入库  其他逻辑
+        $event =$xml_obj->Event;
+        if($event=='subscribe'){
+            //获取用户的openid
+            $openid=$xml_obj->FormUserName;
+            //获取用户的信息
+            $url='https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$this->access_token.'&openid='.$openid.'&lang=zh_CN';
+            $user_info =file_get_contents($url);   //
+            file_put_contents('wx_user_log',$user_info,FILE_APPEND);
+        }
     }
 
 
      //获取用户的基本信息
-    public function getUserInfo(){
-        $url="https://api.weixin.qq.com/cgi-bin/user/info?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN";
+    public function getUserInfo($access_token,$openid){
+        $url="https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$access_token.'&openid=$openid&lang=zh_CN";
+        //发送网络请求
+       $json_str= file_get_contents($url);
+       $log_file = 'wx_user.log';
+       file_put_contents($log_file,$json_str,FILE_APPEND);
     }
 }
 

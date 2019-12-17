@@ -14,5 +14,18 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+
+
+
+Route::get('/test/xml','Test\TestController@xmlTest');
+
+
+
+
+
+
+
 Route::get('/wx','Weixin\WxController@wechat');
+
 Route::post('/wx','Weixin\WxController@receiv');  //接受微信的推送事件
