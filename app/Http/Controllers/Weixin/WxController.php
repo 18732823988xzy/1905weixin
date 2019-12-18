@@ -21,6 +21,7 @@ class WxController extends Controller{
         $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid='.env('WX_APPID').'&secret='.env('WX_APPSECRET').'";
        $data_json = file_get_contents($url);
        $arr =json_decode($data_json,true);
+     //  var_dump($arr);die;
        return $arr['access_token'];
     }
 
@@ -57,14 +58,14 @@ class WxController extends Controller{
         //处理xml数据
         $xml_obj = simplexml_load_string($xml_str);
         //入库  其他逻辑
-        $event =$xml_obj->Event;
+        $event =$xml_obj->Event;   //获取事件类型
         if($event=='subscribe'){
             //获取用户的openid
             $openid=$xml_obj->FormUserName;
             //获取用户的信息
             $url='https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$this->access_token.'&openid='.$openid.'&lang=zh_CN';
             $user_info =file_get_contents($url);   //
-            file_put_contents('wx_user_log',$user_info,FILE_APPEND);
+            file_put_contents('wx_user.log',$user_info,FILE_APPEND);
         }
     }
 
