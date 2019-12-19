@@ -15,7 +15,6 @@ class WxController extends Controller{
     {
         //获取access_token
         $this->access_token=$this->getAccessToken();
-
     }
     protected  function  getAccessToken(){
         $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid='.env('WX_APPID').'&secret='.env('WX_APPSECRET').'";
@@ -66,6 +65,26 @@ class WxController extends Controller{
             $url='https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$this->access_token.'&openid='.$openid.'&lang=zh_CN';
             $user_info =file_get_contents($url);   //
             file_put_contents('wx_user.log',$user_info,FILE_APPEND);
+        }
+
+        //判断消息类型
+        $msg_type =$xml_obj->msgtype;
+        $touser=$xml_obj->FromUsername; //接受消息用户的openid
+        $fromuser=$xml_obj->ToUserName; //开发者公众号的id
+        $time=time();
+
+        if($msg_type=='text'){
+            $content=date('Y-m-d H:i:s').$xml_obj->Content;
+            $response_text='<xml>
+<ToUserName><![CDATA['.$touser.']]></ToUserName>
+<FromUserName><![CDATA['.$fromuser.']]></FromUserName>
+<CreateTime>'.$time.'</CreateTime>
+<MsgType><![CDATA[text]]></MsgType>
+<Content><![CDATA['.$content.']]></Content>
+<MsgId>22573428257637746</MsgId>
+</xml>';
+
+            echo  $response_text;    //回复用户消息
         }
     }
 
