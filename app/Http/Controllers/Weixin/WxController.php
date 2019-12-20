@@ -68,8 +68,8 @@ class WxController extends Controller{
         }
 
         //判断消息类型
-        $msg_type =$xml_obj->msgtype;
-        $touser=$xml_obj->FromUsername; //接受消息用户的openid
+        $msg_type =$xml_obj->MsgType;
+        $touser=$xml_obj->FromUserName; //接受消息用户的openid
         $fromuser=$xml_obj->ToUserName; //开发者公众号的id
         $time=time();
 
