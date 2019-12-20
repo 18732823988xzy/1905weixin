@@ -81,7 +81,6 @@ class WxController extends Controller{
 <CreateTime>'.$time.'</CreateTime>
 <MsgType><![CDATA[text]]></MsgType>
 <Content><![CDATA['.$content.']]></Content>
-<MsgId>22573428257637746</MsgId>
 </xml>';
 
             echo  $response_text;    //回复用户消息
